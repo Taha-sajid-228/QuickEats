@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Home — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+
+<section class="section" style="padding-top:30px">
+  <div class="container">
+    <div class="search-bar" style="max-width:none;margin-bottom:18px">
+      <input id="searchBox" placeholder="Search foods, cuisines, restaurants…"/>
+      <button onclick="filterAll()">Search</button>
+    </div>
+    <div class="menu-cats" id="cuisineFilters"></div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="ai-banner">
+      <div>
+        <span class="ai-pill">✨ For you</span>
+        <h2>AI recommended foods</h2>
+        <p>Picked for your taste based on your previous orders and trending dishes.</p>
+      </div>
+      <div class="grid grid-4" id="aiPicks"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><div><h2>Nearby restaurants</h2><p>Fast delivery from places around you</p></div></div>
+    <div class="grid grid-3" id="rests"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><div><h2>Popular foods</h2></div></div>
+    <div class="grid grid-3" id="foods"></div>
+  </div>
+</section>
+
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("home");
+  let allRests=[], allFoods=[];
+  (async()=>{
+    [allRests, allFoods] = await Promise.all([api('/restaurants'), api('/foods')]);
+    const cuisines = ['All', ...new Set(allRests.filter(r=>r.approved).map(r=>r.cuisine))];
+    document.getElementById('cuisineFilters').innerHTML = cuisines.map((c,i)=>
+      `<button class="${i===0?'active':''}" data-c="${c}">${c}</button>`).join('');
+    document.querySelectorAll('#cuisineFilters button').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('#cuisineFilters button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); filterAll();
+    }));
+    document.getElementById('aiPicks').innerHTML = allFoods.filter(f=>f.aiPick).slice(0,4).map(f=>`
+      <a href="/restaurant?id=${f.restaurantId}" class="card" style="background:rgba(255,255,255,0.08);color:#fff">
+        <div class="card-img"><img src="${f.image}" alt=""></div>
+        <div class="card-body"><div class="card-title" style="color:#fff">${f.name}</div><div style="color:#FFB87A;font-weight:700">${money(f.price)}</div></div>
+      </a>`).join('');
+    filterAll();
+  })();
+  function filterAll(){
+    const q = (document.getElementById('searchBox').value||'').toLowerCase();
+    const c = document.querySelector('#cuisineFilters button.active')?.dataset.c || 'All';
+    const fr = allRests.filter(r=>r.approved).filter(r=>(c==='All'||r.cuisine===c)&&(r.name.toLowerCase().includes(q)||r.tags.join(' ').toLowerCase().includes(q)));
+    const ff = allFoods.filter(f=>f.name.toLowerCase().includes(q));
+    document.getElementById('rests').innerHTML = fr.length?fr.map(restaurantCard).join(''):'<p class="text-muted">No restaurants found.</p>';
+    document.getElementById('foods').innerHTML = ff.slice(0,9).map(foodCard).join('');
+  }
+  document.getElementById('searchBox').addEventListener('input', filterAll);
+</script>
+</body></html>

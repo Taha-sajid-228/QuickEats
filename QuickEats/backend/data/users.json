@@ -1,0 +1,10 @@
+[
+  { "id": "u1", "name": "Sara Khan", "email": "sara@example.com", "phone": "+92 300 1234567", "role": "customer", "status": "active", "joined": "2024-08-12" },
+  { "id": "u2", "name": "Ali Raza", "email": "ali@example.com", "phone": "+92 301 2233445", "role": "customer", "status": "active", "joined": "2024-09-03" },
+  { "id": "u3", "name": "Burger Barn Owner", "email": "owner@burgerbarn.com", "phone": "+92 333 9988776", "role": "vendor", "status": "active", "joined": "2024-05-21" },
+  { "id": "u4", "name": "Hamza Rider", "email": "hamza@quickeats.com", "phone": "+92 345 4455667", "role": "rider", "status": "active", "joined": "2024-06-15" },
+  { "id": "u5", "name": "Admin", "email": "admin@quickeats.com", "phone": "+92 300 0000000", "role": "admin", "status": "active", "joined": "2024-01-01" },
+  { "id": "u6", "name": "Spam User", "email": "spam@bad.com", "phone": "+92 311 9999999", "role": "customer", "status": "banned", "joined": "2025-01-10" },
+  { "id": "u7", "name": "Ezza", "email": "ezza@example.com", "phone": "+92 300 1111111", "role": "customer", "status": "active", "joined": "2024-05-10" },
+  { "id": "u8", "name": "Taha Admin", "email": "taha@quickeats.com", "phone": "+92 300 2222222", "role": "admin", "status": "active", "joined": "2024-05-10" }
+]

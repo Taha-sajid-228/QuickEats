@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Promotions — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><h2>Promotions</h2></div>
+    <div class="grid" style="grid-template-columns:1fr 1.4fr;gap:24px">
+      <div class="card"><div class="card-body">
+        <h3>Create promo code</h3>
+        <form id="pf" class="mt-2">
+          <div class="field"><label class="label">Code</label><input class="input" id="pcode" required style="text-transform:uppercase"/></div>
+          <div class="grid grid-2">
+            <div class="field"><label class="label">Discount %</label><input type="number" class="input" id="pdisc" required min="1" max="100"/></div>
+            <div class="field"><label class="label">Expiry</label><input type="date" class="input" id="pexp" required/></div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">+ Create promotion</button>
+        </form>
+      </div></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Code</th><th>Discount</th><th>Expiry</th><th>Status</th><th></th></tr></thead>
+        <tbody id="tb"></tbody></table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('admin','promotions');
+  let promos = [];
+  function render(){
+    document.getElementById('tb').innerHTML = promos.map(p=>{
+      const expired = new Date(p.expiry)<new Date();
+      return `<tr><td><strong>${p.code}</strong></td><td>${p.discount}%</td><td>${p.expiry}</td>
+        <td><span class="badge ${p.active&&!expired?'badge-success':'badge-danger'}">${p.active&&!expired?'Active':'Expired'}</span></td>
+        <td><button class="btn btn-sm" style="color:var(--danger)" onclick="promos=promos.filter(x=>x.code!=='${p.code}');render()">Delete</button></td></tr>`;
+    }).join('');
+  }
+  (async()=>{ promos = await api('/promotions'); render(); })();
+  document.getElementById('pf').addEventListener('submit',e=>{
+    e.preventDefault();
+    promos.unshift({code:pcode.value.toUpperCase(),discount:+pdisc.value,expiry:pexp.value,active:true});
+    e.target.reset(); render(); toast('Promo created','success');
+  });
+</script>
+</body></html>

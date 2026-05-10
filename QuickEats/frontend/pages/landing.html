@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QuickEats — Order food fast, hot, fresh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div id="navbar-host"></div>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="ai-pill">✨ AI-powered recommendations</span>
+        <h1>Crave it. <span>Tap it.</span><br/>Eat it.</h1>
+        <p>Discover the best food from over 5,000 restaurants near you. Fast delivery, fresh meals, fair prices.</p>
+        <div class="search-bar">
+          <input id="heroSearch" placeholder="Search restaurants or dishes…" />
+          <button onclick="goSearch()">Search</button>
+        </div>
+        <div class="flex" style="margin-top:24px">
+          <a href="/home" class="btn btn-primary">Order now</a>
+          <a href="/restaurants" class="btn btn-ghost">Browse restaurants</a>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=80" alt="Delicious pizza" />
+        <div class="glass">
+          <div style="font-size:1.6rem">🚀</div>
+          <div><strong>20-min delivery</strong><small>Average across the city</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><h2>Browse by category</h2><p>What are you in the mood for?</p></div></div>
+      <div class="cat-strip" id="cats"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="ai-banner">
+        <div>
+          <span class="ai-pill">✨ Smart picks for you</span>
+          <h2>Tonight's AI recommendations</h2>
+          <p>Personalized based on your taste, time of day, and what's trending in your area.</p>
+          <a href="/home" class="btn btn-primary">See my picks</a>
+        </div>
+        <div class="grid grid-4" id="aiPicks"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><h2>Featured restaurants</h2><p>Top-rated near you</p></div><a href="/restaurants" class="btn btn-ghost btn-sm">View all →</a></div>
+      <div class="grid grid-3" id="featured"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><h2>Popular foods</h2><p>What everyone's ordering right now</p></div></div>
+      <div class="grid grid-3" id="popular"></div>
+    </div>
+  </section>
+
+  <div id="footer-host"></div>
+  <script src="/js/app.js"></script>
+  <script>
+    mountChrome("");
+    function goSearch(){const q=document.getElementById('heroSearch').value;location.href='/restaurants?q='+encodeURIComponent(q);}
+    document.getElementById('heroSearch').addEventListener('keydown',e=>{if(e.key==='Enter')goSearch();});
+
+    const CATS = [
+      {emoji:'🍔',name:'Burgers'},{emoji:'🍕',name:'Pizza'},{emoji:'🍣',name:'Sushi'},
+      {emoji:'🌮',name:'Mexican'},{emoji:'🍛',name:'Indian'},{emoji:'🥗',name:'Healthy'},
+      {emoji:'🍰',name:'Desserts'},{emoji:'🥤',name:'Drinks'}
+    ];
+    document.getElementById('cats').innerHTML = CATS.map(c =>
+      `<a href="/restaurants?cuisine=${c.name}" class="cat-card"><div class="emoji">${c.emoji}</div><div>${c.name}</div></a>`
+    ).join('');
+
+    (async()=>{
+      const [rests, foods] = await Promise.all([api('/restaurants'), api('/foods')]);
+      document.getElementById('featured').innerHTML = rests.filter(r=>r.approved).slice(0,6).map(restaurantCard).join('');
+      document.getElementById('popular').innerHTML  = foods.filter(f=>f.popular).slice(0,6).map(foodCard).join('');
+      document.getElementById('aiPicks').innerHTML  = foods.filter(f=>f.aiPick).slice(0,4).map(f=>`
+        <a href="/restaurant?id=${f.restaurantId}" class="card" style="background:rgba(255,255,255,0.08);color:#fff">
+          <div class="card-img"><img src="${f.image}" alt=""></div>
+          <div class="card-body"><div class="card-title" style="color:#fff">${f.name}</div><div style="color:#FFB87A;font-weight:700">${money(f.price)}</div></div>
+        </a>`).join('');
+    })();
+  </script>
+</body>
+</html>

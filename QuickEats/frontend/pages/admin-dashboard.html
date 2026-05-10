@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Dashboard — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><div><h2>Admin overview</h2><p class="text-muted">Platform health at a glance.</p></div></div>
+    <div class="stats">
+      <div class="stat-card"><div class="label">Total users</div><div class="value" id="su">—</div></div>
+      <div class="stat-card"><div class="label">Restaurants</div><div class="value" id="sr">—</div></div>
+      <div class="stat-card"><div class="label">Total orders</div><div class="value" id="so">—</div></div>
+      <div class="stat-card"><div class="label">Revenue</div><div class="value" id="sm">$0</div><div class="delta">+18% MoM</div></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card"><div class="card-body"><h3>Recent orders</h3><div id="ro" class="mt-2"></div></div></div>
+      <div class="card"><div class="card-body"><h3>Pending vendor approvals</h3><div id="pv" class="mt-2"></div></div></div>
+    </div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('admin','dashboard');
+  (async()=>{
+    const [users,rests,orders] = await Promise.all([api('/users'),api('/restaurants'),api('/orders')]);
+    su.textContent=users.length; sr.textContent=rests.length; so.textContent=orders.length;
+    sm.textContent=money(orders.reduce((s,o)=>s+o.total,0)*42);
+    ro.innerHTML='<table><thead><tr><th>Order</th><th>Restaurant</th><th>Total</th><th>Status</th></tr></thead><tbody>'+
+      orders.map(o=>`<tr><td>#${o.id}</td><td>${o.restaurantName}</td><td>${money(o.total)}</td><td><span class="badge ${o.status==='Delivered'?'badge-success':'badge-warning'}">${o.status}</span></td></tr>`).join('')+'</tbody></table>';
+    pv.innerHTML = rests.filter(r=>!r.approved).map(r=>`<div class="flex between" style="padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px"><span>${r.name}</span><button class="btn btn-success btn-sm" onclick="toast('Approved','success')">Approve</button></div>`).join('') || '<p class="text-muted">No pending vendors.</p>';
+  })();
+</script>
+</body></html>

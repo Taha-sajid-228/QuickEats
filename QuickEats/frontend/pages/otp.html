@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Verify OTP — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+<div class="auth-wrap">
+  <form class="form-card fade-in text-center" id="otpForm">
+    <h2>Verify your number</h2><p class="sub">We sent a 4-digit code to your phone. (Hint: <strong>1234</strong>)</p>
+    <div class="otp-row" id="otpRow">
+      <input class="otp-box" maxlength="1" inputmode="numeric"/>
+      <input class="otp-box" maxlength="1" inputmode="numeric"/>
+      <input class="otp-box" maxlength="1" inputmode="numeric"/>
+      <input class="otp-box" maxlength="1" inputmode="numeric"/>
+    </div>
+    <div class="otp-timer" id="timer">Resend in 30s</div>
+    <button class="btn btn-primary btn-block mt-2" type="submit">Verify</button>
+    <div class="form-foot"><a href="/signup">← back to signup</a></div>
+  </form>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("");
+  const boxes = [...document.querySelectorAll('.otp-box')];
+  boxes.forEach((b,i)=>b.addEventListener('input',()=>{ if(b.value && i<3) boxes[i+1].focus(); }));
+  let t=30; const tEl = document.getElementById('timer');
+  const iv = setInterval(()=>{ t--; tEl.textContent = t>0?`Resend in ${t}s`:'Didn\'t get it? '; if(t<=0){clearInterval(iv); tEl.innerHTML='<a href="#" style="color:var(--primary);font-weight:600">Resend code</a>';}},1000);
+  document.getElementById('otpForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const code = boxes.map(b=>b.value).join('');
+    if(code!=='1234'){toast('Invalid code. Try 1234','error');return;}
+    const u = JSON.parse(sessionStorage.getItem('qe_signup')||'{}');
+    Auth.login({name:u.name||'New user', email:u.email});
+    toast('Verified! Welcome aboard 🎉','success');
+    setTimeout(()=>location.href='/home',700);
+  });
+</script>
+</body></html>

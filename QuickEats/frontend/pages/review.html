@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rate your order — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+<style>
+.stars{display:flex;gap:6px;font-size:2rem;cursor:pointer;color:#E5E7EB}
+.stars span.on,.stars span:hover,.stars span:hover ~ span{color:var(--primary)}
+.stars{flex-direction:row-reverse;justify-content:flex-end}
+.stars span:hover ~ span{color:#E5E7EB}
+</style>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container section">
+  <div class="form-card" style="max-width:600px">
+    <h2>How was your experience?</h2>
+    <p class="sub">Order #o1002 · Pizza Royale</p>
+
+    <div class="field"><label class="label">Rate the restaurant</label>
+      <div class="stars" data-target="rRest">${['5','4','3','2','1'].map(n=>`<span data-v="${n}">★</span>`).join('')}</div>
+      <input type="hidden" id="rRest"/>
+    </div>
+    <div class="field"><label class="label">Rate the rider</label>
+      <div class="stars" data-target="rRider">${['5','4','3','2','1'].map(n=>`<span data-v="${n}">★</span>`).join('')}</div>
+      <input type="hidden" id="rRider"/>
+    </div>
+    <div class="field"><label class="label">Write a review</label><textarea class="input" rows="4" id="comment" placeholder="Share your experience…"></textarea></div>
+    <button class="btn btn-primary btn-block" onclick="submitReview()">Submit review</button>
+  </div>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("orders");
+  document.querySelectorAll('.stars').forEach(s=>{
+    s.addEventListener('click',e=>{
+      if(e.target.tagName!=='SPAN')return;
+      const v = +e.target.dataset.v;
+      document.getElementById(s.dataset.target).value = v;
+      [...s.children].forEach(c=>c.classList.toggle('on', +c.dataset.v >= v));
+    });
+  });
+  function submitReview(){
+    if(!document.getElementById('rRest').value||!document.getElementById('rRider').value){toast('Please rate both','error');return;}
+    toast('Thanks for your review! 🌟','success');
+    setTimeout(()=>location.href='/orders',900);
+  }
+</script>
+</body></html>

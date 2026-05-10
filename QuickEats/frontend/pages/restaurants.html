@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Restaurants — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container layout-listing">
+  <aside class="sidebar">
+    <h4>Search</h4><input class="input" id="q" placeholder="Search…"/>
+    <h4>Cuisine</h4><ul class="filter-list" id="cuisineList"></ul>
+    <h4>Min rating</h4>
+    <select class="select" id="rating"><option value="0">Any</option><option value="4">4+</option><option value="4.5">4.5+</option></select>
+    <h4>Sort by</h4>
+    <select class="select" id="sort"><option value="rating">Top rated</option><option value="time">Fastest delivery</option><option value="fee">Lowest fee</option></select>
+  </aside>
+  <main>
+    <div class="section-head" style="margin-bottom: 12px;"><div><h2>Restaurants near you</h2><p id="count" class="text-muted"></p></div></div>
+    <div class="menu-cats mb-4" id="quickFilters">
+      <button class="active" data-cat="">All</button>
+      <button data-cat="American">American</button>
+      <button data-cat="Italian">Italian</button>
+      <button data-cat="Chinese">Chinese</button>
+      <button data-cat="Japanese">Japanese</button>
+      <button data-cat="Mexican">Mexican</button>
+      <button data-cat="Indian">Indian</button>
+      <button data-cat="Healthy">Healthy</button>
+    </div>
+    <div class="grid grid-3" id="grid"></div>
+  </main>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("restaurants");
+  const params = new URLSearchParams(location.search);
+  let all = [];
+  let activeQuickCat = "";
+
+  (async()=>{
+    all = (await api('/restaurants')).filter(r=>r.approved);
+    const cuisines = [...new Set(all.map(r=>r.cuisine))];
+    document.getElementById('cuisineList').innerHTML = cuisines.map(c=>
+      `<li><label><input type="checkbox" value="${c}" ${params.get('cuisine')===c?'checked':''}/> ${c}</label></li>`).join('');
+    document.getElementById('q').value = params.get('q')||'';
+    bind(); render();
+  })();
+  
+  function bind(){
+    ['q','rating','sort'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+    document.querySelectorAll('#cuisineList input').forEach(c=>c.addEventListener('change',render));
+    
+    document.querySelectorAll('#quickFilters button').forEach(b => {
+      b.addEventListener('click', (e) => {
+        document.querySelectorAll('#quickFilters button').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        activeQuickCat = e.target.getAttribute('data-cat');
+        render();
+      });
+    });
+  }
+  
+  function render(){
+    const q = (document.getElementById('q').value || '').toLowerCase();
+    const minR = +document.getElementById('rating').value;
+    const sort = document.getElementById('sort').value;
+    const cs = [...document.querySelectorAll('#cuisineList input:checked')].map(i=>i.value);
+    
+    let list = all.filter(r=>{
+      const matchR = r.rating >= minR;
+      const matchC = cs.length === 0 || cs.includes(r.cuisine);
+      const matchQ = r.name.toLowerCase().includes(q) || r.tags.join(' ').toLowerCase().includes(q);
+      const matchQC = activeQuickCat === "" || r.cuisine === activeQuickCat || r.tags.includes(activeQuickCat);
+      return matchR && matchC && matchQ && matchQC;
+    });
+    
+    if(sort==='rating')list.sort((a,b)=>b.rating-a.rating);
+    if(sort==='time')list.sort((a,b)=>parseInt(a.deliveryTime)-parseInt(b.deliveryTime));
+    if(sort==='fee')list.sort((a,b)=>a.deliveryFee-b.deliveryFee);
+    
+    document.getElementById('grid').innerHTML = list.length?list.map(restaurantCard).join(''):'<p class="text-muted">No restaurants match.</p>';
+    document.getElementById('count').textContent = `${list.length} found`;
+  }
+</script>
+</body></html>

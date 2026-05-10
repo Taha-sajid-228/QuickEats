@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cart — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container cart-grid">
+  <div>
+    <h2>Your cart</h2>
+    <div id="items" class="mt-2"></div>
+  </div>
+  <aside class="summary">
+    <h3>Order summary</h3>
+    <div class="row"><span>Subtotal</span><span id="sub">$0.00</span></div>
+    <div class="row"><span>Delivery</span><span>$1.99</span></div>
+    <div class="row"><span>Discount</span><span id="disc" class="text-success">-$0.00</span></div>
+    <div class="row total"><span>Total</span><span id="total">$0.00</span></div>
+    <div class="field mt-2"><label class="label">Promo code</label>
+      <div class="flex"><input class="input" id="promo" placeholder="WELCOME20"/><button class="btn btn-dark btn-sm" onclick="applyPromo()">Apply</button></div>
+    </div>
+    <a href="/checkout" class="btn btn-primary btn-block mt-2">Proceed to checkout</a>
+  </aside>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("");
+  let promoPct = 0;
+  function render(){
+    const items = Cart.get();
+    const host = document.getElementById('items');
+    if(!items.length){ host.innerHTML = '<p class="text-muted">Your cart is empty. <a href="/restaurants" style="color:var(--primary);font-weight:600">Browse restaurants →</a></p>'; }
+    else host.innerHTML = items.map(i=>`
+      <div class="cart-item">
+        <img src="${i.image}" alt=""/>
+        <div><strong>${i.name}</strong><div class="text-muted" style="font-size:0.85rem">${money(i.price)} each</div>
+          <div class="qty mt-2"><button onclick="Cart.setQty('${i.id}',${i.qty-1});render()">−</button><span>${i.qty}</span><button onclick="Cart.setQty('${i.id}',${i.qty+1});render()">+</button>
+          <button class="btn btn-sm" style="color:var(--danger)" onclick="Cart.remove('${i.id}');render()">Remove</button></div>
+        </div>
+        <strong>${money(i.qty*i.price)}</strong>
+      </div>`).join('');
+    const sub = Cart.total();
+    const discount = sub * promoPct/100;
+    document.getElementById('sub').textContent = money(sub);
+    document.getElementById('disc').textContent = '-'+money(discount);
+    document.getElementById('total').textContent = money(sub + 1.99 - discount);
+  }
+  async function applyPromo(){
+    const code = document.getElementById('promo').value.trim().toUpperCase();
+    try{ const p = await api('/promotions/'+code);
+      if(!p.active||new Date(p.expiry)<new Date()){toast('Promo expired','error');return;}
+      promoPct = p.discount; toast(`${p.discount}% off applied!`,'success'); render();
+    }catch{ toast('Invalid promo','error'); }
+  }
+  render();
+</script>
+</body></html>

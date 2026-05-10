@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Delivery — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><h2>Active delivery — #o1001</h2></div>
+    <div class="map-placeholder" style="height:340px">🗺  Live navigation (placeholder)</div>
+    <div class="grid grid-2 mt-2">
+      <div class="card"><div class="card-body">
+        <h3>Pickup</h3>
+        <p style="margin:6px 0"><strong>Burger Barn</strong></p>
+        <p class="text-muted" style="font-size:0.9rem">123 Main St</p>
+        <a href="tel:+923000000000" class="btn btn-ghost btn-sm mt-2">📞 Call restaurant</a>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h3>Drop-off</h3>
+        <p style="margin:6px 0"><strong>Sara K.</strong></p>
+        <p class="text-muted" style="font-size:0.9rem">House 14, Street 5, Lahore</p>
+        <a href="tel:+923001234567" class="btn btn-ghost btn-sm mt-2">📞 Call customer</a>
+      </div></div>
+    </div>
+    <div class="card mt-2"><div class="card-body">
+      <h3>Update status</h3>
+      <div class="flex mt-2">
+        <button class="btn btn-ghost" onclick="setStatus('Arrived at restaurant')">Arrived at restaurant</button>
+        <button class="btn btn-ghost" onclick="setStatus('Picked up')">Picked up</button>
+        <button class="btn btn-primary" onclick="setStatus('On the way')">On the way</button>
+        <button class="btn btn-success" onclick="setStatus('Delivered')">Delivered</button>
+      </div>
+    </div></div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('rider','delivery');
+  function setStatus(s){toast('Status: '+s,'success');}
+</script>
+</body></html>

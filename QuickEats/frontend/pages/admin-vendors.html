@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vendors — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><h2>Vendor management</h2></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Name</th><th>Cuisine</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="tb"></tbody></table>
+    </div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('admin','vendors');
+  (async()=>{
+    const r = await api('/restaurants');
+    document.getElementById('tb').innerHTML = r.map(v=>`
+      <tr><td><strong>${v.name}</strong><div class="text-muted" style="font-size:0.8rem">${v.address}</div></td>
+        <td>${v.cuisine}</td><td>★ ${v.rating}</td>
+        <td><span class="badge ${v.approved?'badge-success':'badge-warning'}">${v.approved?'Active':'Pending'}</span></td>
+        <td><div class="flex">
+          ${v.approved?'<button class="btn btn-sm" style="background:var(--danger);color:#fff" onclick="toast(\'Suspended\',\'error\')">Suspend</button>':'<button class="btn btn-success btn-sm" onclick="toast(\'Approved\',\'success\')">Approve</button>'}
+          <button class="btn btn-ghost btn-sm">View</button>
+        </div></td></tr>`).join('');
+  })();
+</script>
+</body></html>

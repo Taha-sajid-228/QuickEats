@@ -1,0 +1,6 @@
+[
+  { "id": "rv1", "restaurantId": "r1", "user": "Sara K.", "rating": 5, "comment": "Best burger in town! Hot and quick.", "date": "2025-05-01", "flagged": false },
+  { "id": "rv2", "restaurantId": "r3", "user": "Ali R.", "rating": 4, "comment": "Pizza was great, delivery a bit slow.", "date": "2025-04-28", "flagged": false },
+  { "id": "rv3", "restaurantId": "r5", "user": "Hira N.", "rating": 5, "comment": "Biryani was perfect, will order again.", "date": "2025-04-25", "flagged": false },
+  { "id": "rv4", "restaurantId": "r2", "user": "Anonymous", "rating": 1, "comment": "Spam content here ###", "date": "2025-04-20", "flagged": true }
+]

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Profile — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><div><h2>My profile</h2><p class="text-muted">Manage your personal information and addresses.</p></div></div>
+    
+    <div class="grid grid-2 mt-2">
+      <div class="card"><div class="card-body">
+        <h3>Personal information</h3>
+        <form id="pf" class="mt-2">
+          <div class="grid grid-2">
+            <div class="field"><label class="label">Full name</label><input class="input" id="pName"/></div>
+            <div class="field"><label class="label">Email</label><input type="email" class="input" id="pEmail"/></div>
+            <div class="field"><label class="label">Phone</label><input class="input" id="pPhone" value="+92 300 1234567"/></div>
+            <div class="field"><label class="label">Date of birth</label><input type="date" class="input"/></div>
+          </div>
+          <button class="btn btn-primary" type="submit">Save changes</button>
+        </form>
+      </div></div>
+
+      <div class="card"><div class="card-body">
+        <div class="flex between"><h3>Saved addresses</h3><button class="btn btn-ghost btn-sm" onclick="addAddr()">+ Add</button></div>
+        <ul id="addrList" style="list-style:none;padding:0;margin-top:14px;display:grid;gap:10px"></ul>
+      </div></div>
+    </div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('customer','profile');
+  const u = Auth.user || {name:'Guest', email:'guest@quickeats.com'};
+  document.getElementById('pName').value = u.name; document.getElementById('pEmail').value = u.email;
+  let addrs = JSON.parse(localStorage.getItem('qe_addrs')||'["🏠 Home — House 14, Street 5, Lahore","🏢 Work — Block C, DHA Phase 6"]');
+  function renderAddrs(){
+    document.getElementById('addrList').innerHTML = addrs.map((a,i)=>`<li class="flex between" style="padding:12px;border:1px solid var(--border);border-radius:12px"><span>${a}</span><button class="btn btn-sm" style="color:var(--danger)" onclick="rmAddr(${i})">Remove</button></li>`).join('');
+  }
+  function addAddr(){const v=prompt('New address');if(v){addrs.push(v);localStorage.setItem('qe_addrs',JSON.stringify(addrs));renderAddrs();}}
+  function rmAddr(i){addrs.splice(i,1);localStorage.setItem('qe_addrs',JSON.stringify(addrs));renderAddrs();}
+  document.getElementById('pf').addEventListener('submit',e=>{e.preventDefault();Auth.login({name:pName.value,email:pEmail.value,role:u.role});toast('Profile updated','success');});
+  renderAddrs();
+</script>
+</body></html>

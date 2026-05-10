@@ -1,0 +1,41 @@
+[
+  {
+    "id": "o1001",
+    "userId": "u1",
+    "restaurantId": "r1",
+    "restaurantName": "Burger Barn",
+    "items": [
+      { "name": "Classic Cheeseburger", "qty": 2, "price": 8.99 },
+      { "name": "Crispy Fries", "qty": 1, "price": 3.49 }
+    ],
+    "total": 21.47,
+    "status": "On the way",
+    "createdAt": "2025-05-08T18:30:00Z",
+    "rider": { "name": "Hamza", "phone": "+92 345 4455667", "vehicle": "Honda 125" },
+    "address": "House 14, Street 5, Lahore"
+  },
+  {
+    "id": "o1002",
+    "userId": "u1",
+    "restaurantId": "r3",
+    "restaurantName": "Pizza Royale",
+    "items": [{ "name": "Margherita Pizza", "qty": 1, "price": 12.99 }],
+    "total": 13.98,
+    "status": "Delivered",
+    "createdAt": "2025-05-02T20:10:00Z",
+    "rider": { "name": "Bilal", "phone": "+92 300 1112233", "vehicle": "Suzuki" },
+    "address": "House 14, Street 5, Lahore"
+  },
+  {
+    "id": "o1003",
+    "userId": "u2",
+    "restaurantId": "r5",
+    "restaurantName": "Curry Kingdom",
+    "items": [{ "name": "Chicken Biryani", "qty": 2, "price": 13.99 }],
+    "total": 30.97,
+    "status": "Preparing",
+    "createdAt": "2025-05-09T13:00:00Z",
+    "rider": { "name": "Hamza", "phone": "+92 345 4455667", "vehicle": "Honda 125" },
+    "address": "Block C, DHA Phase 6"
+  }
+]

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vendor Dashboard — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><div><h2>Welcome back, Burger Barn 👋</h2><p class="text-muted">Here's what's happening today.</p></div>
+      <button class="btn btn-primary">+ New menu item</button></div>
+    <div class="stats">
+      <div class="stat-card"><div class="label">Total orders</div><div class="value">142</div><div class="delta">+12% this week</div></div>
+      <div class="stat-card"><div class="label">Revenue</div><div class="value">$3,820</div><div class="delta">+8.4%</div></div>
+      <div class="stat-card"><div class="label">Avg rating</div><div class="value">4.7 ★</div><div class="delta">+0.2</div></div>
+      <div class="stat-card"><div class="label">Active items</div><div class="value">28</div><div class="delta">3 out of stock</div></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card"><div class="card-body"><h3>Recent orders</h3>
+        <table class="mt-2"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody>
+          <tr><td>#o1001</td><td>Sara K.</td><td>$21.47</td><td><span class="badge badge-warning">On the way</span></td></tr>
+          <tr><td>#o1000</td><td>Ali R.</td><td>$13.98</td><td><span class="badge badge-success">Delivered</span></td></tr>
+          <tr><td>#o0999</td><td>Hira N.</td><td>$30.97</td><td><span class="badge badge-success">Delivered</span></td></tr>
+        </tbody></table>
+      </div></div>
+      <div class="card"><div class="card-body"><h3>Top dishes</h3>
+        <ul style="list-style:none;padding:0;margin-top:14px;display:grid;gap:12px">
+          <li class="flex between">🍔 Classic Cheeseburger<strong>62 sold</strong></li>
+          <li class="flex between">🍔 BBQ Bacon Burger<strong>48 sold</strong></li>
+          <li class="flex between">🍟 Crispy Fries<strong>91 sold</strong></li>
+        </ul>
+      </div></div>
+    </div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>document.getElementById('side').innerHTML = dashLayout('vendor','dashboard');</script>
+</body></html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Live tracking — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container section">
+  <h2>Live order tracking</h2>
+  <p class="text-muted">Order #o1001 · Burger Barn</p>
+
+  <div class="cart-grid mt-2">
+    <div>
+      <div class="map-placeholder">🗺  Live map view (placeholder)</div>
+      <div class="card mt-2"><div class="card-body">
+        <h3>Status</h3>
+        <div class="timeline mt-2" id="tl"></div>
+      </div></div>
+    </div>
+    <aside class="summary">
+      <h3>Estimated arrival</h3>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--primary);font-family:Poppins">12 min</div>
+      <p class="text-muted">Arriving by 7:42 PM</p>
+      <div class="card mt-2" style="box-shadow:none;border:1px solid var(--border)"><div class="card-body">
+        <div class="flex"><div style="width:48px;height:48px;border-radius:999px;background:var(--primary-soft);display:grid;place-items:center;font-size:1.4rem">🛵</div>
+        <div><strong>Hamza Ali</strong><div class="text-muted" style="font-size:0.85rem">Honda 125 · ABC-123</div></div></div>
+        <div class="flex mt-2"><a href="tel:+923454455667" class="btn btn-ghost btn-sm btn-block">📞 Call rider</a></div>
+      </div></div>
+    </aside>
+  </div>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("orders");
+  const steps = [
+    {label:'Order placed', time:'7:18 PM', state:'done'},
+    {label:'Restaurant accepted', time:'7:20 PM', state:'done'},
+    {label:'Preparing your food', time:'7:24 PM', state:'done'},
+    {label:'Out for delivery', time:'7:32 PM', state:'active'},
+    {label:'Delivered', time:'~7:42 PM', state:''}
+  ];
+  document.getElementById('tl').innerHTML = steps.map((s,i)=>`
+    <div class="tl-step ${s.state}"><div class="tl-dot">${s.state==='done'?'✓':i+1}</div>
+      <div><strong>${s.label}</strong><small>${s.time}</small></div></div>`).join('');
+</script>
+</body></html>

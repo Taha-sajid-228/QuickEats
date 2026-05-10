@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Checkout — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+<style>
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.pay-opt{border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;font-weight:600;transition:var(--t);background:#fff}
+.pay-opt:hover{border-color:var(--primary)}
+.pay-opt.sel{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+</style>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container cart-grid">
+  <form id="coForm">
+    <h2>Checkout</h2>
+    <div class="card mt-2"><div class="card-body">
+      <h3 style="margin-bottom:14px">Delivery address</h3>
+      <div class="field"><label class="label">Full name</label><input class="input" required/></div>
+      <div class="field"><label class="label">Phone</label><input class="input" required placeholder="+92 …"/></div>
+      <div class="field"><label class="label">Street address</label><input class="input" required/></div>
+      <div class="grid grid-2"><div class="field"><label class="label">City</label><input class="input" required/></div><div class="field"><label class="label">Postal code</label><input class="input"/></div></div>
+      <div class="field"><label class="label">Delivery instructions</label><textarea class="input" rows="2"></textarea></div>
+    </div></div>
+    <div class="card mt-2"><div class="card-body">
+      <h3 style="margin-bottom:14px">Payment method</h3>
+      <div class="pay-grid" id="pay">
+        <div class="pay-opt sel" data-m="COD">💵 Cash</div>
+        <div class="pay-opt" data-m="JazzCash">📱 JazzCash</div>
+        <div class="pay-opt" data-m="EasyPaisa">💳 EasyPaisa</div>
+        <div class="pay-opt" data-m="Card">💳 Card</div>
+      </div>
+    </div></div>
+  </form>
+  <aside class="summary">
+    <h3>Your order</h3>
+    <div id="lines" class="mt-2"></div>
+    <div class="row total"><span>Total</span><span id="total">$0.00</span></div>
+    <button class="btn btn-primary btn-block mt-2" onclick="placeOrder()">Place order</button>
+  </aside>
+</div>
+
+<div class="modal" id="m"><div class="modal-card text-center">
+  <div style="font-size:3rem">🎉</div><h3>Order placed!</h3><p>Your food is on its way. Track it live now.</p>
+  <a href="/tracking" class="btn btn-primary btn-block">Track my order</a>
+</div></div>
+
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("");
+  document.querySelectorAll('.pay-opt').forEach(o=>o.addEventListener('click',()=>{
+    document.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel');
+  }));
+  function render(){
+    const items = Cart.get();
+    document.getElementById('lines').innerHTML = items.map(i=>`<div class="row"><span>${i.qty}× ${i.name}</span><span>${money(i.qty*i.price)}</span></div>`).join('') || '<p class="text-muted">No items</p>';
+    document.getElementById('total').textContent = money(Cart.total()+1.99);
+  }
+  function placeOrder(){
+    if(!Cart.get().length){toast('Cart is empty','error');return;}
+    if(!document.getElementById('coForm').checkValidity()){document.getElementById('coForm').reportValidity();return;}
+    Cart.clear();
+    document.getElementById('m').classList.add('open');
+  }
+  render();
+</script>
+</body></html>

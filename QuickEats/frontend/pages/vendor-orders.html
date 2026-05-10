@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Orders Management — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div class="layout-dash">
+  <div id="side"></div>
+  <main class="dash-main">
+    <div class="dash-head"><h2>Orders</h2></div>
+    <div id="list" class="grid grid-2"></div>
+  </main>
+</div>
+<script src="/js/app.js"></script><script src="/js/panel.js"></script>
+<script>
+  document.getElementById('side').innerHTML = dashLayout('vendor','orders');
+  (async()=>{
+    const orders = await api('/orders');
+    document.getElementById('list').innerHTML = orders.map(o=>`
+      <div class="card"><div class="card-body">
+        <div class="flex between"><strong>#${o.id}</strong><span class="badge badge-warning">${o.status}</span></div>
+        <div class="text-muted" style="font-size:0.85rem;margin:6px 0">${new Date(o.createdAt).toLocaleString()} · ${o.address}</div>
+        <ul style="list-style:none;padding:0;margin:10px 0;font-size:0.9rem">${o.items.map(i=>`<li>${i.qty}× ${i.name} — ${money(i.qty*i.price)}</li>`).join('')}</ul>
+        <div class="flex between mt-2"><strong>${money(o.total)}</strong>
+          <div class="flex"><button class="btn btn-success btn-sm" onclick="toast('Order accepted','success')">Accept</button>
+          <button class="btn btn-sm" style="background:var(--danger);color:#fff" onclick="toast('Order rejected','error')">Reject</button>
+          <select class="select" style="padding:6px 10px;font-size:0.85rem;width:auto" onchange="toast('Status: '+this.value,'success')">
+            <option>Preparing</option><option>Ready</option><option>Picked up</option><option>Delivered</option>
+          </select></div>
+        </div>
+      </div></div>`).join('');
+  })();
+</script>
+</body></html>

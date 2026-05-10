@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Restaurant — QuickEats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+</head><body>
+<div id="navbar-host"></div>
+<div class="container">
+  <div class="rest-banner" id="banner"><div class="rest-banner-info" id="bannerInfo"></div></div>
+  <div class="menu-cats" id="cats"></div>
+  <div id="menu"></div>
+
+  <section class="section">
+    <h2>Reviews</h2>
+    <div id="reviews" class="grid grid-2 mt-2"></div>
+  </section>
+</div>
+<div id="footer-host"></div>
+<script src="/js/app.js"></script>
+<script>
+  mountChrome("restaurants");
+  const id = new URLSearchParams(location.search).get('id') || 'r1';
+  let foods = [], activeCat='All';
+  (async()=>{
+    const [r, allFoods, reviews] = await Promise.all([api('/restaurants/'+id), api('/foods'), api('/reviews')]);
+    document.title = `${r.name} — QuickEats`;
+    document.getElementById('banner').style.backgroundImage = `url(${r.banner})`;
+    document.getElementById('bannerInfo').innerHTML = `
+      <h1>${r.name}</h1>
+      <div class="flex" style="margin-top:8px">
+        <span class="rating">★ ${r.rating} (${r.reviews})</span>
+        <span style="color:#fff">⏱ ${r.deliveryTime}</span>
+        <span style="color:#fff">🛵 ${money(r.deliveryFee)}</span>
+        <span style="color:#fff">📍 ${r.address}</span>
+      </div>`;
+    foods = allFoods.filter(f=>f.restaurantId===id);
+    const cats = ['All', ...new Set(foods.map(f=>f.category))];
+    document.getElementById('cats').innerHTML = cats.map((c,i)=>`<button class="${i===0?'active':''}" data-c="${c}">${c}</button>`).join('');
+    document.querySelectorAll('#cats button').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('#cats button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); activeCat=b.dataset.c; renderMenu();
+    }));
+    renderMenu();
+    const rv = reviews.filter(x=>x.restaurantId===id && !x.flagged);
+    document.getElementById('reviews').innerHTML = rv.length?rv.map(r=>`
+      <div class="card"><div class="card-body">
+        <div class="flex between"><strong>${r.user}</strong><span class="rating">★ ${r.rating}</span></div>
+        <p style="margin-top:8px;color:var(--muted)">${r.comment}</p>
+        <small class="text-muted">${r.date}</small>
+      </div></div>`).join('') : '<p class="text-muted">No reviews yet.</p>';
+  })();
+  function renderMenu(){
+    const list = activeCat==='All'?foods:foods.filter(f=>f.category===activeCat);
+    document.getElementById('menu').innerHTML = list.map(f=>`
+      <div class="menu-row">
+        <div>
+          <div class="card-title">${f.name}</div>
+          <div class="text-muted" style="font-size:0.9rem;margin-top:4px">${f.description||''}</div>
+          <div class="meta"><span class="price">${money(f.price)}</span>
+            <button class="btn btn-primary btn-sm" onclick='Cart.add(${JSON.stringify({id:f.id,name:f.name,price:f.price,image:f.image})})'>+ Add to cart</button>
+          </div>
+        </div>
+        <img src="${f.image}" alt="${f.name}"/>
+      </div>`).join('');
+  }
+</script>
+</body></html>

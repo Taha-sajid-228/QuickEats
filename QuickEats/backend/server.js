@@ -38,6 +38,10 @@ app.get("/:page", (req, res, next) => {
   res.sendFile(file, (err) => (err ? next() : null));
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🍔  QuickEats running at http://localhost:${PORT}\n`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`\n🍔  QuickEats running at http://localhost:${PORT}\n`);
+  });
+}
+
+module.exports = app;

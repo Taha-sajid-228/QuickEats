@@ -102,7 +102,7 @@ function renderFooter() {
           <div class="brand"><span class="logo">Q</span><span>Quick<span class="accent">Eats</span></span></div>
           <p style="font-size:0.9rem;max-width:280px;">Order from your favorite restaurants and get food delivered fast, hot, and fresh.</p>
         </div>
-        <div><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul></div>
+        <div><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul></div>
         <div><h4>For You</h4><ul><li><a href="/restaurants">Restaurants</a></li><li><a href="/orders">My Orders</a></li><li><a href="#">Promotions</a></li></ul></div>
         <div><h4>Partner</h4><ul><li><a href="/vendor-dashboard">Become a Vendor</a></li><li><a href="/rider-dashboard">Drive with us</a></li><li><a href="/admin-dashboard">Admin</a></li></ul></div>
       </div>
@@ -158,7 +158,7 @@ function foodCard(f) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const publicPaths = ["/", "/landing", "/login", "/signup", "/otp", "/home", "/restaurants", "/restaurant"];
+  const publicPaths = ["/", "/landing", "/login", "/signup", "/otp", "/home", "/restaurants", "/restaurant", "/about"];
   if (!Auth.user && !publicPaths.includes(window.location.pathname)) {
     window.location.href = "/login";
     return;

@@ -7,8 +7,8 @@ frontend and **Node.js + Express** serving dummy JSON data on the backend.
 
 ## ✨ Features
 
-**Customer side** (13 pages): Landing, Login, Signup, OTP, Home, Restaurant Listing,
-Restaurant Details, Cart, Checkout, Live Tracking, Reviews, My Orders, Profile.
+**Customer side** (14 pages): Landing, Login, Signup, OTP, Home, Restaurant Listing,
+Restaurant Details, Cart, Checkout, Live Tracking, Reviews, My Orders, Profile, About.
 
 **Vendor panel**: Dashboard, Menu Management, Orders Management.
 

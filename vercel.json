@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/**/*.js": {
-      "includeFiles": ["frontend/**", "backend/data/**"]
+      "includeFiles": "frontend/**"
     }
   },
   "rewrites": [
